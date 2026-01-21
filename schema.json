@@ -1,0 +1,109 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ProFootball API",
+    "description": "Real-time football match center backend.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4001",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/api/matches": {
+      "get": {
+        "summary": "Get all live/upcoming matches",
+        "tags": ["Matches"],
+        "responses": {
+          "200": {
+            "description": "List of matches",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Match" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/matches/{id}": {
+      "get": {
+        "summary": "Get match details by ID",
+        "tags": ["Matches"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed match information",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Match" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/matches/{id}/events/stream": {
+      "get": {
+        "summary": "Match event stream (SSE)",
+        "tags": ["Matches"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server-Sent Events stream",
+            "content": {
+              "text/event-stream": {
+                "schema": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Match": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "homeTeam": { "$ref": "#/components/schemas/Team" },
+          "awayTeam": { "$ref": "#/components/schemas/Team" },
+          "homeScore": { "type": "integer" },
+          "awayScore": { "type": "integer" },
+          "minute": { "type": "integer" },
+          "status": { "type": "string" },
+          "startTime": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Team": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "shortCode": { "type": "string" },
+          "logoUrl": { "type": "string" }
+        }
+      }
+    }
+  }
+}

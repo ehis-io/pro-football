@@ -1,0 +1,32 @@
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +16ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mThrottlerModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEventEmitterModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mScheduleModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mScheduleModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mRedisModule dependencies initialized[39m[38;5;3m +22ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mGatewayModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:25 AM [32m    LOG[39m [38;5;3m[RedisModule] [39m[32mdefault: the connection was successfully established[39m[38;5;3m +8ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmCoreModule dependencies initialized[39m[38;5;3m +5571ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSimulationModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mMatchModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mMatchGateway subscribed to the "joinMatch" message[39m[38;5;3m +128ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mMatchGateway subscribed to the "leaveMatch" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mMatchGateway subscribed to the "sendMessage" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mMatchGateway subscribed to the "typing" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mMatchController {/api/matches}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/matches, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/matches/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/api/matches/:id/events/stream, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:30 AM [32m    LOG[39m [38;5;3m[MatchSimulationService] [39m[32mMatch simulation service started[39m
+[32m[Nest] 62358  - [39m01/21/2026, 8:44:31 AM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +742ms[39m
