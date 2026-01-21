@@ -1,10 +1,10 @@
-# 🏆 ProFootball Backend - Real-time Match Center
+#  ProFootball Backend - Real-time Match Center
 
 A high-performance real-time football match center built with **NestJS**, **TypeORM (Supabase)**, **Redis**, and **Socket.io**. This backend powers live score updates, match event streams, and real-time chat functionality for football fans.
 
 ---
 
-## 🚀 Quick Start & Setup
+##  Quick Start & Setup
 
 Follow these steps to get your development environment up and running.
 
@@ -50,7 +50,7 @@ npm run start:prod
 ## 🏛️ Architecture Decisions
 
 ### ⚡ Event-Driven Simulation
-The `MatchSimulationService` uses a decoupled heartbeat mechanism. It emits events via NestJS `EventEmitter2`, allowing multiple subscribers (Gateways, SSE, Logs) to react independently. 
+The `MatchSimulationService` uses a decoupled heartbeat mechanism. It emits events via NestJS `EventEmitter2`, allowing multiple subscribers (Gateways, Logs) to react independently. 
 - **Time Logic**: 1 real second = 1 game minute.
 - **Event Engine**: Probability-based event generation (goals, cards, substitutions).
 
@@ -65,7 +65,7 @@ The `MatchSimulationService` uses a decoupled heartbeat mechanism. It emits even
 
 The absolute source of truth for our API is the Swagger documentation.
 
-- **Interactive Documentation**: `http://localhost:3000/api/docs`
+- **Interactive Documentation**: `http://localhost:{{PORT}}/api/docs`
 
 ### 🛠️ REST Endpoints
 
@@ -79,17 +79,33 @@ The absolute source of truth for our API is the Swagger documentation.
 
 **Namespace: Default**
 
+#### Incoming Events (Client → Server)
+
 | Event | Payload | Description |
 | :--- | :--- | :--- |
-| `joinMatch` | `{ matchId: string }` | Join a match room to receive updates and chat |
-| `leaveMatch` | `{ matchId: string }` | Leave a match room |
-| `sendMessage` | `{ matchId: string, message: string }` | Send a chat message to the room |
-| `typing` | `{ matchId: string, isTyping: boolean }` | Emit typing status to others in the room |
+| `joinMatch` | `{ "matchId": "uuid", "userId": "string" }` | Join a match's real-time room and chat. |
+| `leaveMatch` | `{ "matchId": "uuid", "userId": "string" }` | Leave the match room. |
+| `sendMessage` | `{ "message": "string" }` | Send a message to the match chat (max 280 chars). |
+| `typing` | `{ "isTyping": boolean }` | Update your typing status in the match room. |
+
+#### Outgoing Events (Server → Client)
+
+| Event | Channel | Payload Description |
+| :--- | :--- | :--- |
+| `joined` | Sender | `{ "matchId": string, "userId": string, "count": number }` - Confirmation of successful join. |
+| `userJoined` | Room | `{ "userId": string }` - Notifies room that a new user has entered. |
+| `userLeft` | Room | `{ "userId": string }` - Notifies room that a user has departed. |
+| `userCountUpdate` | Room | `{ "matchId": string, "count": number }` - Real-time active user count for the match. |
+| `matchUpdated` | Room | `Match` object - Full update when match score or state changes. |
+| `newEvent` | Room | `MatchEvent` object - Real-time notification of a specific goal, card, or sub. |
+| `chatMessage` | Room | `{ "userId": string, "message": string, "timestamp": string }` - New message in chat. |
+| `typingUpdate` | Others | `{ "matchId": string, "users": string[] }` - List of userIds currently typing. |
+| `error` | Sender | `{ "message": string, "details?": string }` - Error notification for failed actions. |
 
 ---
 
 ## ⚠️ Known Limitations & Trade-offs
 
-- **NestJS 11 Peer Dependencies**: Due to `@liaoliaots/nestjs-redis` (v10) strict peer dependency on NestJS 10, an **npm override** is used in `package.json` to ensure compatibility with NestJS 11.
+- **NestJS 11 Peer Dependencies**: Because of `@liaoliaots/nestjs-redis` (v10) strict peer dependency on NestJS 10, an **npm override** is used in `package.json` to ensure compatibility with NestJS 11.
 - **Match Lifecycle**: Injury time is currently simplified to fixed durations.
 - **Stateless Gateways**: While the server is mostly stateless via Redis, Socket.io session stickiness should be considered for multi-node deployments.
