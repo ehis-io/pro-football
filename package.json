@@ -42,6 +42,12 @@
     "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.28"
   },
+  "overrides": {
+    "@liaoliaots/nestjs-redis": {
+      "@nestjs/common": "$@nestjs/common",
+      "@nestjs/core": "$@nestjs/core"
+    }
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
     "@eslint/js": "^9.21.0",
