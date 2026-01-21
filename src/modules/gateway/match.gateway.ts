@@ -46,7 +46,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const userId = client.userId;
 
     if (matchId && userId) {
-      await this.chatRoomService.removeUserFromRoom(matchId, userId);
+      await this.chatRoomService.removeUserFromRoom(matchId, userId, client.id);
       const count = await this.chatRoomService.getActiveUserCount(matchId);
       this.server
         .to(`match:${matchId}`)
@@ -87,11 +87,10 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await client.join(`match:${matchId}`);
       this.logger.log(`Client ${client.id} joined room: match:${matchId}`);
 
-      // Store user info on the socket for cleanup on disconnect
       client.matchId = matchId;
       client.userId = userId;
 
-      await this.chatRoomService.addUserToRoom(matchId, userId);
+      await this.chatRoomService.addUserToRoom(matchId, userId, client.id);
 
       const count = await this.chatRoomService.getActiveUserCount(matchId);
 
@@ -114,18 +113,27 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('leaveMatch')
   async handleLeaveMatch(
     @ConnectedSocket() client: AuthenticatedSocket,
-    @MessageBody() data: { matchId: string; userId: string },
+    @MessageBody() data: any,
   ) {
     try {
-      if (!data || !data.matchId || !data.userId) {
+      let payload = data;
+      if (typeof data === 'string') {
+        try {
+          payload = JSON.parse(data);
+        } catch (e) {
+          this.logger.warn(`Failed to parse string data in leaveMatch: ${data}`);
+        }
+      }
+
+      if (!payload || !payload.matchId || !payload.userId) {
         this.logger.warn(`Invalid leaveMatch data from client ${client.id}`);
         return;
       }
 
-      const { matchId, userId } = data;
+      const { matchId, userId } = payload;
       await client.leave(`match:${matchId}`);
 
-      await this.chatRoomService.removeUserFromRoom(matchId, userId);
+      await this.chatRoomService.removeUserFromRoom(matchId, userId, client.id);
 
       const count = await this.chatRoomService.getActiveUserCount(matchId);
 
@@ -153,9 +161,18 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('sendMessage')
   handleChatMessage(
     @ConnectedSocket() client: AuthenticatedSocket,
-    @MessageBody() data: { message: string },
+    @MessageBody() data: any,
   ) {
     try {
+      let payload = data;
+      if (typeof data === 'string') {
+        try {
+          payload = JSON.parse(data);
+        } catch (e) {
+          this.logger.warn(`Failed to parse string data in sendMessage: ${data}`);
+        }
+      }
+
       const matchId = client.matchId;
       const userId = client.userId;
 
@@ -167,12 +184,12 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return;
       }
 
-      if (!data || !data.message) {
+      if (!payload || !payload.message) {
         this.logger.warn(`Empty message or invalid data from user ${userId}`);
         return;
       }
 
-      if (data.message.length > 280) {
+      if (payload.message.length > 280) {
         this.logger.warn(`Message too long from user ${userId}`);
         client.emit('error', { message: 'Message too long (max 280 chars)' });
         return;
@@ -182,7 +199,7 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       this.server.to(`match:${matchId}`).emit('chatMessage', {
         userId: userId,
-        message: data.message,
+        message: payload.message,
         timestamp: new Date(),
       });
     } catch (error) {
@@ -194,9 +211,18 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('typing')
   async handleTyping(
     @ConnectedSocket() client: AuthenticatedSocket,
-    @MessageBody() data: { isTyping: boolean },
+    @MessageBody() data: any,
   ) {
     try {
+      let payload = data;
+      if (typeof data === 'string') {
+        try {
+          payload = JSON.parse(data);
+        } catch (e) {
+          this.logger.warn(`Failed to parse string data in typing: ${data}`);
+        }
+      }
+
       const matchId = client.matchId;
       const userId = client.userId;
 
@@ -205,11 +231,11 @@ export class MatchGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return;
       }
 
-      if (!data || typeof data.isTyping === 'undefined') {
+      if (!payload || typeof payload.isTyping === 'undefined') {
         return;
       }
 
-      await this.chatRoomService.setTypingStatus(matchId, userId, data.isTyping);
+      await this.chatRoomService.setTypingStatus(matchId, userId, payload.isTyping);
 
       const typingUsers = await this.chatRoomService.getTypingUsers(matchId);
 

@@ -49,6 +49,8 @@ CREATE TABLE IF NOT EXISTS chat_messages (
     "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_matches_status ON matches(status);
 CREATE INDEX IF NOT EXISTS idx_match_events_match_id ON match_events("matchId");

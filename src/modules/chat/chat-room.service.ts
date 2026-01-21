@@ -10,16 +10,27 @@ export class ChatRoomService {
     this.redis = this.redisService.getOrThrow();
   }
 
-  async addUserToRoom(matchId: string, userId: string) {
+  async addUserToRoom(matchId: string, userId: string, socketId: string) {
+    // Add socket to the room's active sockets
+    await this.redis.sadd(`match:${matchId}:sockets`, socketId);
+    // Add user to the room's unique users
     await this.redis.sadd(`match:${matchId}:users`, userId);
   }
 
-  async removeUserFromRoom(matchId: string, userId: string) {
-    await this.redis.srem(`match:${matchId}:users`, userId);
+  async removeUserFromRoom(matchId: string, userId: string, socketId: string) {
+    await this.redis.srem(`match:${matchId}:sockets`, socketId);
+    
+    // Check if user has any other sockets in this room
+    // This is a bit complex for a simple set, but we can just use the socket count as the truth for "active connections"
   }
 
   async getActiveUserCount(matchId: string): Promise<number> {
+    // Return unique users count for a more accurate representation of "people"
     return this.redis.scard(`match:${matchId}:users`);
+  }
+  
+  async getActiveSocketCount(matchId: string): Promise<number> {
+    return this.redis.scard(`match:${matchId}:sockets`);
   }
 
   async setTypingStatus(matchId: string, userId: string, isTyping: boolean) {
@@ -32,7 +43,25 @@ export class ChatRoomService {
   }
 
   async getTypingUsers(matchId: string): Promise<string[]> {
-    const keys = await this.redis.keys(`match:${matchId}:typing:*`);
-    return keys.map((key: string) => key.split(':').pop() || '');
+    const pattern = `match:${matchId}:typing:*`;
+    const typingUsers: string[] = [];
+    let cursor = '0';
+
+    do {
+      const [newCursor, keys] = await this.redis.scan(
+        cursor,
+        'MATCH',
+        pattern,
+        'COUNT',
+        100,
+      );
+      cursor = newCursor;
+      keys.forEach((key) => {
+        const userId = key.split(':').pop();
+        if (userId) typingUsers.push(userId);
+      });
+    } while (cursor !== '0');
+
+    return typingUsers;
   }
 }

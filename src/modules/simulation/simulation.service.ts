@@ -8,6 +8,7 @@ import { MatchStatus } from '../../common/enums/match-status.enum';
 import { MatchEventType } from '../../common/enums/event-type.enum';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Team } from '../../entities/team.entity';
+import { ChatRoomService } from '../chat/chat-room.service';
 
 @Injectable()
 export class MatchSimulationService implements OnApplicationBootstrap {
@@ -19,6 +20,7 @@ export class MatchSimulationService implements OnApplicationBootstrap {
     @InjectRepository(MatchEvent)
     private readonly eventRepository: Repository<MatchEvent>,
     private readonly eventEmitter: EventEmitter2,
+    private readonly chatRoomService: ChatRoomService,
   ) {}
 
   async onApplicationBootstrap() {
@@ -76,6 +78,23 @@ export class MatchSimulationService implements OnApplicationBootstrap {
         });
 
         for (const match of liveMatches) {
+          // Optimization: Only simulate if there are active viewers
+          const activeViewers = await this.chatRoomService.getActiveSocketCount(match.id);
+          if (activeViewers === 0) {
+            continue;
+          }
+
+          // Recovery logic for stuck matches
+          if (match.minute > 120) {
+            this.logger.warn(`Resetting stuck match ${match.id} (minute ${match.minute})`);
+            match.minute = 0;
+            match.status = MatchStatus.FIRST_HALF;
+            match.homeScore = 0;
+            match.awayScore = 0;
+            match.startTime = new Date();
+            await this.matchRepository.save(match);
+            continue;
+          }
           await this.processMatchTick(match);
         }
         break; // Success, exit loop

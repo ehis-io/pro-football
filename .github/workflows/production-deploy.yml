@@ -1,0 +1,59 @@
+name: Deploy ProFootball for Production
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, pro-football]
+
+    steps:
+      - name: 🧭 Checkout latest code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🧹 Clean workspace
+        run: |
+          echo "Cleaning workspace..."
+          git clean -fdx
+
+      - name: ⚙️ Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            npm-
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🛠️ Create .env file
+        run: |
+          echo "Creating .env file..."
+          cat <<EOF > .env
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_PORT=${{ vars.DB_PORT }}
+          DB_USERNAME=${{ secrets.DB_USERNAME }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_NAME=${{ vars.DB_NAME }}
+          REDIS_HOST=${{ vars.REDIS_HOST }}
+          REDIS_PORT=${{ vars.REDIS_PORT }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          PORT=${{ vars.PORT }}
+         
+          EOF
+
+      - name: Run tests
+        run: npm run test
+
+      - name: 🏗️ Build app
+        run: npm run build
+
+      - name: 🚀 Reload PM2
+        run: |
+          pm2 reload pro-football || pm2 start dist/main.js --name pro-football
+          pm2 save
